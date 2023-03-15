@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import Logo from "../../public/logoOnly.svg";
 import Link from "next/link";
 import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
