@@ -1,63 +1,28 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
 import Link from "next/link";
 import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-
-const inter = Inter({ subsets: ["latin"] });
+import TopLists from "@src/components/toplists";
 
 export default function Home() {
   const app = useRef();
-  const logo = useRef();
   const hero = useRef();
   const heroText = useRef();
 
   useLayoutEffect(() => {
-    const navbarLogo = document.getElementsByClassName("navbarLogo")[0];
-
-    const navbarLogoPos = navbarLogo.getBoundingClientRect();
-    const logoPos = logo.current.getBoundingClientRect();
-    const heroTextPos = heroText.current.getBoundingClientRect();
-
-    console.log(heroTextPos);
-    console.log(window.innerWidth, window.innerHeight);
-
     let ctx = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
-
-      // gsap.to(logo.current, {
-      //   scrollTrigger: {
-      //     trigger: hero.current,
-      //     start: "top top",
-      //     end: "80% 56px",
-      //     markers: true,
-      //     scrub: true,
-      //     pin: true,
-      //   },
-      //   y:
-      //     navbarLogoInfo.y -
-      //     logoInfo.y -
-      //     (logoInfo.height / 2 - navbarLogoInfo.height / 2),
-      //   x:
-      //     navbarLogoInfo.x -
-      //     logoInfo.x -
-      //     (logoInfo.width / 2 - navbarLogoInfo.width / 2),
-      //   ease: "none",
-      //   scale: navbarLogoInfo.width / logoInfo.width,
-      // });
 
       const mm = gsap.matchMedia();
 
       mm.add("(min-width:800px)", () => {
-        const tl = gsap.timeline({
+        const heroTL = gsap.timeline({
           scrollTrigger: {
             trigger: hero.current,
             start: "top top",
-            end: "+=700",
-            markers: true,
+            end: "+=200",
             scrub: true,
-            pin: true,
+            pin: false,
             snap: {
               snapTo: "labels",
               ease: "none",
@@ -65,43 +30,98 @@ export default function Home() {
           },
         });
 
-        tl.addLabel("first")
+        heroTL
+          .addLabel("circle")
           .to(
-            logo.current,
+            ".secCircle",
             {
-              x:
-                navbarLogoPos.x -
-                logoPos.x -
-                (logoPos.width / 2 - navbarLogoPos.width / 2),
-              ease: "none",
-              scale: (navbarLogoPos.width / logoPos.width) * 5,
+              x: -30,
+              y: -30,
             },
             ">"
           )
           .to(
-            heroText.current,
+            ".thirdCircle",
             {
-              x:
-                window.innerWidth / 2 -
-                (heroTextPos.left + heroTextPos.right) / 2,
+              x: -40,
+              y: -40,
             },
             "<"
           )
-          .to(logo.current, {
-            autoAlpha: 0,
-            ease: "none",
-            y:
-              navbarLogoPos.y -
-              logoPos.y -
-              (logoPos.height / 2 - navbarLogoPos.height / 2),
-            scale: navbarLogoPos.width / logoPos.width,
-          });
+          .to(
+            ".firstCircle",
+            {
+              x: -10,
+              y: -10,
+            },
+            "<"
+          );
 
-        gsap.to(".content", {
+        const contentCircles = gsap.timeline({
           scrollTrigger: {
             trigger: ".content",
-            start: "%10 top",
+            start: "top top",
+            end: "+=900",
+            scrub: true,
+            pin: false,
+            snap: {
+              snapTo: "labels",
+              ease: "none",
+            },
           },
+        });
+        contentCircles
+          .addLabel("circles")
+          .to(
+            ".contentCircleTop",
+            {
+              x: -100,
+              y: -100,
+            },
+            ">"
+          )
+          .to(
+            ".contentCircleLeft",
+            {
+              x: 50,
+            },
+            "<"
+          )
+          .to(
+            ".contentCircleBottom",
+            {
+              x: 100,
+              y: 100,
+            },
+            "<"
+          );
+
+        gsap.to(".contentFirst", {
+          scrollTrigger: {
+            trigger: ".content",
+            start: "top 800",
+            end: "+=500",
+            scrub: true,
+          },
+          xPercent: 10,
+        });
+        gsap.to(".contentSecond", {
+          scrollTrigger: {
+            trigger: ".content",
+            start: "top 500",
+            end: "+=500",
+            scrub: true,
+          },
+          xPercent: -10,
+        });
+        gsap.to(".contentThird", {
+          scrollTrigger: {
+            trigger: ".content",
+            start: "top 200",
+            end: "+=500",
+            scrub: true,
+          },
+          xPercent: 10,
         });
       });
     }, app);
@@ -113,79 +133,122 @@ export default function Home() {
     <div className="app" ref={app}>
       <div
         ref={hero}
-        className="h-[488px] w-full z-30 flex flex-col space-y-10 pb-14 justify-center items-center shadow-xl md:flex-row md:justify-evenly md:space-y-0 bg-gradient-to-r from-logoFirst to-logoSec  md:h-[52rem] "
+        className="container relative overflow-clip mx-auto px-4 pt-20 mb-32 z-30 flex space-y-10 items-start md:pt-36 md:mb-64 lg:pt-44 lg:pb-20 xl:pt-60 "
       >
-        <svg
-          ref={logo}
-          className="h-24 md:h-64 logo z-50"
-          viewBox="0 0 471 364"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M142.975 334.376C102.107 376.036 32.8912 375.87 13.5611 320.347C9.77659 309.476 6.7507 298.299 4.52517 286.894C-4.56164 240.326 0.102037 192.058 17.9265 148.192C35.7509 104.328 65.9355 66.8355 104.663 40.4574C143.392 14.0793 188.923 -2.03383e-06 235.501 0C282.078 2.03384e-06 327.61 14.0793 366.337 40.4574C405.065 66.8355 435.249 104.328 453.074 148.194C470.898 192.058 475.561 240.326 466.475 286.894C464.25 298.299 461.224 309.476 457.438 320.347C438.108 375.87 368.893 376.036 328.024 334.376L264.938 270.068C258.91 263.924 259.533 253.791 261.196 245.27C262.206 240.09 261.687 234.72 259.704 229.84C257.721 224.96 254.364 220.789 250.056 217.855C245.747 214.921 240.682 213.354 235.501 213.354C230.319 213.354 225.254 214.921 220.946 217.855C216.636 220.789 213.279 224.96 211.296 229.84C209.313 234.72 208.794 240.09 209.805 245.27C211.468 253.791 212.089 263.924 206.062 270.068L142.975 334.376Z"
-            fill="url(#paint0_linear_15_245)"
-          />
-          <defs>
-            <linearGradient
-              id="paint0_linear_15_245"
-              x1="449.563"
-              y1="120.03"
-              x2="31.5511"
-              y2="120.03"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#64C2DB" />
-              <stop offset="0.510417" stop-color="#7476ED" />
-              <stop offset="1" stop-color="#E56F8C" />
-            </linearGradient>
-          </defs>
-        </svg>
         <div
           ref={heroText}
-          className="inline-flex font-motivaSansTest flex-col items-center space-y-3 md:space-y-8"
+          className="flex font-motivaSansTest flex-col md:space-y-8"
         >
-          <span className="text-3xl font-bold md:text-8xl text-transparent bg-clip-text  bg-gradient-to-r from-first via-sec to-last">
-            Create your list
+          <span className="text-xl w-80 font-bold md:text-3xl md:w-2/3 lg:w-[35rem] lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-first via-sec to-last">
+            Discover the Best TV Shows and Create Your Own Lists with Us!
           </span>
-          <span className="text-xl font-medium md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-first via-sec to-last">
-            and share it with one click!
+          <span className="text-sm w-[19rem] font-medium my-3 md:text-lg md:w-3/5 lg:w-[34rem] lg:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-first via-sec to-last">
+            Browse through user-generated lists to find the most popular TV show
+            recommendations and create your own lists to join the community.
           </span>
+          <Link
+            href={"/createlist"}
+            className="p-[1px] mt-4 w-fit bg-gradient-to-r from-first via-sec to-last rounded-md md:mt-0 md:rounded-2xl"
+          >
+            <button className="p-1 md:py-2 md:px-4 bg-opacity-[0.85] bg-white rounded-md md:rounded-2xl hover:bg-opacity-70">
+              <span className="bg-gradient-to-r from-first via-sec to-last bg-clip-text text-transparent font-medium md:font-bold">
+                Create List
+              </span>
+            </button>
+          </Link>
         </div>
+
+        <div className="absolute firstCircle -z-10 blur-sm bg-first/50 rounded-full w-60 h-60 -bottom-32 -right-32 lg:w-[27rem] lg:h-[27rem] lg:-bottom-48 lg:-right-32"></div>
+        <div className="absolute secCircle -z-20 blur-sm bg-sec/50 rounded-full w-44 h-44 -bottom-8 -right-8 lg:w-80 lg:h-80 lg:-bottom-4 lg:right-6"></div>
+        <div className="absolute thirdCircle -z-30 blur-sm bg-last/30 rounded-full w-32 h-32 bottom-8 right-10 lg:w-64 lg:h-64 lg:bottom-24 lg:right-32"></div>
       </div>
-      {/* <div className="h-[700px] overflow-auto no-scrollbar content scroll-smooth"> */}
-      <div className="flex justify-center my-16">
-        <div className="flex flex-col items-center w-3/5 bg-gradient-to-r from-logoFirst via-logoSec to-logoLast font-motivaSansTest rounded-xl md:flex-row md:justify-center md:my-36">
-          <div className="w-full relative after:content-[' '] after:absolute after:rounded-2xl after:top-0 after:left-0 after:bottom-0 after:right-0 after:border-8 after:border-white ">
-            <div className="relative h-36 w-full p-4 bg-slate-200 space-y-2 border-4 border-white bg-opacity-80 md:h-48 md:min-w-72">
-              <div className="absolute top-1 left-1 bottom-1 right-1 rounded-xl z-30 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]" />
-              <span className="font-medium text-2xl">Sign Up</span>
-              <p className="font-medium text-lg text-slate-600">
-                Sign up to create your own list!
-              </p>
-            </div>
-          </div>
-          <div className="w-full relative after:content-[' '] after:absolute after:rounded-2xl after:top-0 after:left-0 after:bottom-0 after:right-0 after:border-8 after:border-white ">
-            <div className="relative h-36 w-full p-4 space-y-2 border-4 border-white bg-slate-200 bg-opacity-80  md:h-48 md:min-w-72 ">
-              <div className="absolute top-1 left-1 bottom-1 right-1 rounded-xl z-30 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]" />
-              <span className="font-medium text-2xl">Create List</span>
-              <p className="font-medium text-lg text-slate-600">
-                Create your list to show your friends!
-              </p>
-            </div>
-          </div>
-          <div className="w-full relative  after:content-[' '] after:absolute after:rounded-2xl after:top-0 after:left-0 after:bottom-0 after:right-0 after:border-8 after:border-white ">
-            <div className="relative h-36 w-full p-4 space-y-2 border-4 border-white bg-slate-200 bg-opacity-80 md:h-48 md:min-w-72">
-              <div className="absolute top-1 left-1 bottom-1 right-1 rounded-xl z-30 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]" />
-              <span className="font-medium text-2xl">Share It!</span>
-              <p className="font-medium text-lg text-slate-600">
-                Share it with one click!
-              </p>
-            </div>
+
+      <div className="content max-w-md mx-auto md:max-w-2xl lg:max-w-4xl xl:max-w-6xl relative mt-4 overflow-clip">
+        <div className="top-11 sticky -z-10">
+          <div className="w-full h-screen absolute overflow-clip rounded-3xl">
+            <div className="absolute contentCircleTop blur-md rounded-full bg-first/50 h-64 w-64 -right-32 -top-32 lg:-right-[300px] lg:-top-[300px] lg:h-[600px] lg:w-[600px]"></div>
+            <div className="absolute contentCircleLeft blur-md rounded-full bg-sec/50 h-64 w-64 -left-52 top-40  lg:-left-[540px] lg:top-28 lg:h-[600px] lg:w-[600px]"></div>
+            <div className="absolute contentCircleBottom blur-md rounded-full bg-last/50 h-64 w-64 right-0 -bottom-28 lg:-bottom-[300px] lg:h-[600px] lg:w-[600px] "></div>
           </div>
         </div>
+        <div className="relative p-4 flex flex-col w-full h-full space-y-16 lg:px-20 lg:space-y-48">
+          <div className="flex flex-col contentFirst p-3 w-52 space-y-4 lg:w-96">
+            <div className="flex text-center">
+              <span className="basis-1/4">
+                <svg
+                  className="inline-block fill-sec/80 h-8 lg:h-10"
+                  viewBox="0 0 1000 1000"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d=" M 175 750C 175 750 175 750 175 750C 175 625 250 550 375 550C 458 571 458 575 500 575C 542 575 547 571 630 550C 755 550 825 625 825 750C 825 750 825 825 825 825C 825 867 792 900 750 900C 750 900 250 900 250 900C 208 900 175 867 175 825C 175 825 175 750 175 750M 367 173C 367 173 367 173 367 173C 403 138 450 118 500 118C 550 118 597 138 633 173C 668 208 688 256 688 306C 687 409 604 493 500 493C 396 493 312 409 312 306C 312 256 332 208 367 173" />
+                </svg>
+              </span>
+              <h3 className="basis-1/2 bg-gradient-to-r from-first to-sec bg-clip-text text-transparent font-bold text-lg lg:text-2xl">
+                Sign Up
+              </h3>
+            </div>
+            <p className="bg-gradient-to-r from-first to-sec bg-clip-text font-medium text-transparent lg:text-xl">
+              Sign up and save your TV show ratings! Joining is free and gives
+              you access to all features.
+            </p>
+          </div>
+          <div className="flex flex-col contentSecond p-3 w-52 space-y-4 self-end lg:w-96">
+            <div className="flex text-center">
+              <span className="basis-1/4">
+                <svg
+                  className="inline-block fill-sec/80 h-8 lg:h-10"
+                  viewBox="0 0 1000 1000"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M 200 688C 200 688 800 688 800 688C 823 687 844 699 855 718C 866 738 866 762 855 782C 844 801 823 813 800 812C 800 812 200 812 200 812C 177 813 156 801 145 782C 134 762 134 738 145 718C 156 699 177 687 200 688C 200 688 200 688 200 688M 200 437C 200 437 800 437 800 437C 823 437 844 449 855 468C 866 488 866 512 855 532C 844 551 823 563 800 563C 800 563 200 563 200 563C 177 563 156 551 145 532C 134 512 134 488 145 468C 156 449 177 437 200 437C 200 437 200 437 200 437M 200 188C 200 188 800 188 800 188C 823 187 844 199 855 218C 866 238 866 262 855 282C 844 301 823 313 800 312C 800 312 200 312 200 312C 177 313 156 301 145 282C 134 262 134 238 145 218C 156 199 177 187 200 188C 200 188 200 188 200 188" />
+                </svg>
+              </span>
+              <h3 className="basis-1/2 bg-gradient-to-r from-first to-sec bg-clip-text text-transparent font-bold text-lg lg:text-2xl">
+                Create List
+              </h3>
+            </div>
+            <p className="bg-gradient-to-r from-first to-sec bg-clip-text font-medium text-transparent lg:text-xl">
+              Easily create your own TV show lists! You can create as many lists
+              as you want and rate TV shows.
+            </p>
+          </div>
+          <div className="flex flex-col contentThird p-3 w-56 space-y-4 lg:w-[26rem]">
+            <div className="flex text-center">
+              <span className="basis-1/4">
+                <svg
+                  className="inline-block fill-sec/80 h-8 lg:h-10"
+                  viewBox="0 0 1000 1000"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M 750 88C 750 88 750 88 750 88C 839 88 912 161 912 250C 912 339 839 412 750 412C 705 412 664 394 634 364C 634 364 411 476 411 476C 412 484 412 492 412 500C 412 509 412 517 411 525C 411 525 634 637 634 637C 663 606 705 588 750 588C 839 588 912 661 912 750C 912 839 839 912 750 912C 661 912 588 839 588 750C 588 742 588 734 589 726C 589 726 365 614 365 614C 336 644 295 663 250 663C 161 663 88 589 88 500C 88 411 161 337 250 337C 295 337 336 356 366 387C 366 387 589 274 589 274C 588 266 588 258 588 250C 588 161 661 88 750 88" />
+                </svg>
+              </span>
+              <h3 className="basis-1/2 bg-gradient-to-r from-first to-sec bg-clip-text text-transparent font-bold text-lg lg:text-2xl">
+                Share List
+              </h3>
+            </div>
+            <p className="bg-gradient-to-r from-first to-sec bg-clip-text font-medium text-transparent lg:text-xl">
+              Share your TV show lists with friends! Sharing your lists can give
+              others recommendations or inspiration.
+            </p>
+          </div>
+        </div>
+        <TopLists />
+        <div className="flex mt-24 flex-col items-center space-y-4 pb-12">
+          <span className="bg-gradient-to-r from-first to-sec text-transparent bg-clip-text font-medium text-lg lg:text-2xl lg:font-bold text-center">
+            What are your favorite TV shows? <br /> Start creating your list
+            today!
+          </span>
+          <Link
+            href={"createlist"}
+            className="py-2 px-3 bg-sec rounded-lg hover:bg-sec/80"
+          >
+            <span className="font-medium text-white">Create List</span>
+          </Link>
+        </div>
       </div>
-      <div className="w-full border bg-gradient-to-r from-logoFirst to-logoSec">
+
+      <div className="w-full border bg-gradient-to-r from-logoFirst to-logoSec hidden">
         <div className="w-4/5 sm:w-3/5 mx-auto my-16">
           <div className="ml-2 rounded-sm text-center">
             <span className="text-xl font-medium p-1 md:text-2xl lg:text-3xl">
@@ -221,18 +284,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex my-24 flex-col items-center w-4/5 md:w-3/5 space-y-4 mx-auto">
-        <span className="font-medium text-3xl">
-          What are your favorite TV shows? Start creating your list today!
-        </span>
-        <Link
-          href={"createlist"}
-          className="py-2 px-3 border bg-logoFirst rounded-lg hover:bg-logoFirst/70"
-        >
-          Create List
-        </Link>
-      </div>
-      {/* </div> */}
     </div>
   );
 }

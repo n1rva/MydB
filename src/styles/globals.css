@@ -4,18 +4,25 @@
 
 @layer utilities {
     @variants responsive {
-
-        /* Hide scrollbar for Chrome, Safari and Opera */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
-
-        /* Hide scrollbar for IE, Edge and Firefox */
         .no-scrollbar {
             -ms-overflow-style: none;
-            /* IE and Edge */
             scrollbar-width: none;
-            /* Firefox */
         }
     }
+}
+
+.singleItemBorder{
+background: radial-gradient(circle at 100% 100%, #ffffff 0, #ffffff 14px, transparent 14px) 0% 0%/16px 16px no-repeat,
+        radial-gradient(circle at 0 100%, #ffffff 0, #ffffff 14px, transparent 14px) 100% 0%/16px 16px no-repeat,
+        radial-gradient(circle at 100% 0, #ffffff 0, #ffffff 14px, transparent 14px) 0% 100%/16px 16px no-repeat,
+        radial-gradient(circle at 0 0, #ffffff 0, #ffffff 14px, transparent 14px) 100% 100%/16px 16px no-repeat,
+        linear-gradient(#ffffff, #ffffff) 50% 50%/calc(100% - 4px) calc(100% - 32px) no-repeat,
+        linear-gradient(#ffffff, #ffffff) 50% 50%/calc(100% - 32px) calc(100% - 4px) no-repeat,
+        linear-gradient(90deg, #79cbca 0%, #77a1d3 50%, #e684ae 100%);
+    border-radius: 16px;
+    padding: calc(2px + 0.5rem);
+    box-sizing: border-box;
 }
